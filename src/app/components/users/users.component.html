@@ -1,0 +1,29 @@
+<form [formGroup]="formFilter">
+	<div class="mb-3 row">
+		<label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
+		<div class="col-xs-3 col-sm-auto">
+			<input id="table-filtering-search" class="form-control" type="text" />
+		</div>
+	</div>
+</form>
+
+<!--<table class="table table-striped">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Country</th>
+			<th scope="col">Area</th>
+			<th scope="col">Population</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr *ngFor="let usuario of usuarios$ | async; index as i">
+			<th scope="row">{{ i + 1 }}</th>
+			<td>
+				<ngb-highlight [result]="usuario.id" [term]="filter.value"></ngb-highlight>
+			</td>
+			<td><ngb-highlight [result]="usuario.area | number" [term]="filter.value"></ngb-highlight></td>
+			<td><ngb-highlight [result]="usuario.population | number" [term]="filter.value"></ngb-highlight></td>
+		</tr>
+	</tbody>
+</table>-->

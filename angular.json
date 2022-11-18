@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "MaquetaAngular14": {
+    "PruebaFrontendFinanzauto": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "MaquetaAngular14:build:production"
+              "browserTarget": "PruebaFrontendFinanzauto:build:production"
             },
             "development": {
-              "browserTarget": "MaquetaAngular14:build:development"
+              "browserTarget": "PruebaFrontendFinanzauto:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "MaquetaAngular14:build"
+            "browserTarget": "PruebaFrontendFinanzauto:build"
           }
         },
         "test": {

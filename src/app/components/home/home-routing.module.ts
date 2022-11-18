@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { UsersComponent } from '../users/users.component';
 import { HomeComponent } from './home.component';
 
 const routes: Routes = [
   {
     path: '', component: HomeComponent, children: [
-      { path: '', component: HomeComponent}
+      { path: 'users', component: UsersComponent }
     ],
   },
   // No concidencia

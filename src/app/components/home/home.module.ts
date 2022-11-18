@@ -1,19 +1,21 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+/**
+ * Components
+ */
+import { NavComponent } from '../nav/nav.component';
+
 
 @NgModule({
   declarations: [
-    HomeComponent
+    HomeComponent,
+    NavComponent
   ],
   imports: [
-    CommonModule,
-    NgbModule,    
     HomeRoutingModule
-  ]
+  ],
+  bootstrap: [HomeComponent]
 })
 export class HomeModule { }
