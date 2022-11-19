@@ -1,0 +1,156 @@
+
+<form>
+	<div class="mb-3 row">
+		<label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">
+			<strong>Buscar en la tabla: </strong>
+		</label>
+		<div class="col-xs-6 col-sm-6">
+			<input id="table-filtering-search" placeholder="Buscar..." class="form-control form-control-sm" type="text" [formControl]="filter"/>
+		</div>
+	</div>
+</form>
+
+
+<button type="button" class="btn btn-outline-success btn-sm float-end" (click)="openModalUser(content, 1)">
+	<fa-icon [icon]="['fas', 'user-plus']"></fa-icon> Crear Usuario
+</button>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Id</th>
+			<th scope="col">Nombres y Apellidos</th>
+			<th scope="col" class="text-center">Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr *ngFor="let usuario of usuarios$ | async; index as i">
+			<th scope="row">{{ i + 1 }}</th>
+			<td><ngb-highlight [result]="usuario.id" [term]="filter.value"></ngb-highlight></td>
+			<td>
+				<img [src]="usuario.picture" class="img-thumbnail rounded-circle" [alt]="usuario.firstName">
+				<ngb-highlight [result]="usuario.title | titlecase" [term]="filter.value"></ngb-highlight>&nbsp;
+				<ngb-highlight [result]="usuario.firstName" [term]="filter.value"></ngb-highlight>&nbsp;
+				<ngb-highlight [result]="usuario.lastName" [term]="filter.value"></ngb-highlight>
+			</td>
+			<td>
+				<div class="text-center">
+					<button 
+						type="button" 
+						class="btn btn-outline-secondary btn-sm me-2" 
+						placement="top" 
+						ngbTooltip="Ver detalle"
+						(click)="openModalUser(content, 2)"
+					>
+						<fa-icon [icon]="['fas', 'user-check']"></fa-icon>
+					</button>
+
+					<button 
+						type="button" 
+						class="btn btn-outline-primary btn-sm me-2"
+						placement="top" 
+						ngbTooltip="Editar"
+					>
+						<fa-icon [icon]="['fas', 'user-pen']"></fa-icon>
+					</button>
+
+					<button 
+						type="button" 
+						class="btn btn-outline-danger btn-sm me-2"
+						placement="top" 
+						ngbTooltip="Eliminar"
+					>
+						<fa-icon [icon]="['fas', 'user-xmark']"></fa-icon>
+					</button>			
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div class="d-flex justify-content-between p-2">
+	<ngb-pagination
+		[collectionSize]="totalUsuarios"
+		[(page)]="page"
+		[pageSize]="limit"
+		(pageChange)="refreshTable()"
+	>
+	</ngb-pagination>
+</div>
+
+<ng-template #content let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title">{{tituloModal}}</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+
+	<div class="modal-body">
+		<form [formGroup]="formGroupUser">
+			<div class="mb-3">
+				<label for="titulo" class="form-label">Título</label>
+				<select id="titulo" class="form-select form-select-sm" aria-label=".form-select-sm" formControlName="title">
+					<option value="">--Select--</option>
+					<option value="Mr">Mr</option>
+					<option value="Ms">Ms</option>
+					<option value="Mrs">Mrs</option>
+					<option value="Miss">Miss</option>
+					<option value="Dr">Dr</option>
+				</select>
+			</div>
+			<div class="mb-3">
+				<label for="nombres" class="form-label">Nombres</label>
+				<input type="text" class="form-control form-control-sm" id="nombres" formControlName="firstName" placeholder="Nombres completos">
+			</div>
+			<div class="mb-3">
+				<label for="apellidos" class="form-label">Apellidos</label>
+				<input type="text" class="form-control form-control-sm" id="apellidos" formControlName="lastName" placeholder="Apellidos completos">
+			</div>
+			<div class="mb-3">
+				<label for="imagen" class="form-label">Imagen</label>
+				<input type="text" class="form-control form-control-sm" id="imagen" formControlName="picture" placeholder="Url de la imagen">
+			</div>
+			<div class="mb-3">
+				<label for="genero" class="form-label">Género</label>
+				<select id="genero" class="form-select form-select-sm" aria-label=".form-select-sm" formControlName="genero">
+					<option value="">--Select--</option>
+					<option value="Male">Male</option>
+					<option value="Female">Female</option>
+					<option value="Other">Other</option>
+				</select>
+			</div>
+			<div class="mb-3">
+				<label for="email" class="form-label">Correo electrónico</label>
+				<input type="email" class="form-control form-control-sm" id="email" formControlName="email" placeholder="example@example.com">
+			</div>
+
+			<label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+			<div class="input-group mb-3">				
+				<button class="btn btn-outline-secondary btn-sm bi bi-calendar3" type="button" (click)="d.toggle()" id="button-addon1"></button>
+				<input
+					class="form-control form-control-sm"
+					placeholder="YYY-MM-DD"
+					name="fechaNacimiento"
+					formControlName="fechaNacimiento"
+					ngbDatepicker
+					#d="ngbDatepicker"
+					readonly
+					aria-describedby="button-addon1"
+					(click)="d.toggle()"
+				/>
+			</div>
+
+			<div class="mb-3">
+				<label for="telefono" class="form-label">Teléfono</label>
+				<input type="text" class="form-control form-control-sm" id="telefono" formControlName="picture" placeholder="Teléfono fijo o celular">
+			</div>
+
+			<button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
+		</form>
+	</div>
+	
+	<div class="modal-footer">
+		<button type="button" class="btn btn-outline-danger btn-sm me-2" (click)="modal.close('Close click')">
+			<fa-icon [icon]="['fas', 'user-xmark']"></fa-icon> Cerrar
+		</button>
+	</div>
+</ng-template>

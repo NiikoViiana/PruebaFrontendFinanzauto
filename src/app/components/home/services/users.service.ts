@@ -17,8 +17,7 @@ export class UsersService {
     return this.http.get(environment.apiUrl + `/data/v1/user?page=${page}&limit=${limit}`)
       .pipe(
         map((response: any) => {
-          const users: Array<User> = response.data;
-          return users;
+          return response;
         })
       );
   }
