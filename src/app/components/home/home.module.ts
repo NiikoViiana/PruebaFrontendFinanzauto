@@ -11,7 +11,7 @@ import { UsersComponent } from './components/users/users.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faUserCheck, faUserPen, faUserPlus, faUserXmark } from '@fortawesome/free-solid-svg-icons';
+import { faFloppyDisk, faUserCheck, faUserPen, faUserPlus, faUserXmark, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 
 @NgModule({
@@ -37,6 +37,13 @@ export class HomeModule {
   
   constructor(library: FaIconLibrary) {
     // Add an icon to the library for convenient access in other components
-    library.addIcons(faUserPen, faUserPlus, faUserXmark, faUserCheck);
+    library.addIcons(
+      faUserPen, 
+      faUserPlus, 
+      faUserXmark, 
+      faUserCheck, 
+      faFloppyDisk,
+      faXmark
+    );
   }
 }

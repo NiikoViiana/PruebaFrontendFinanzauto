@@ -2,7 +2,7 @@
 <form>
 	<div class="mb-3 row">
 		<label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">
-			<strong>Buscar en la tabla: </strong>
+			<strong>Buscar en la página actual: </strong>
 		</label>
 		<div class="col-xs-6 col-sm-6">
 			<input id="table-filtering-search" placeholder="Buscar..." class="form-control form-control-sm" type="text" [formControl]="filter"/>
@@ -11,7 +11,7 @@
 </form>
 
 
-<button type="button" class="btn btn-outline-success btn-sm float-end" (click)="openModalUser(content, 1)">
+<button type="button" class="btn btn-outline-success btn-sm float-end" (click)="openModalUser(content, 1, '')">
 	<fa-icon [icon]="['fas', 'user-plus']"></fa-icon> Crear Usuario
 </button>
 
@@ -41,7 +41,7 @@
 						class="btn btn-outline-secondary btn-sm me-2" 
 						placement="top" 
 						ngbTooltip="Ver detalle"
-						(click)="openModalUser(content, 2)"
+						(click)="openModalUser(content, 2, usuario.id)"
 					>
 						<fa-icon [icon]="['fas', 'user-check']"></fa-icon>
 					</button>
@@ -51,6 +51,7 @@
 						class="btn btn-outline-primary btn-sm me-2"
 						placement="top" 
 						ngbTooltip="Editar"
+						(click)="openModalUser(content, 3, usuario.id)"
 					>
 						<fa-icon [icon]="['fas', 'user-pen']"></fa-icon>
 					</button>
@@ -85,38 +86,91 @@
 	</div>
 
 	<div class="modal-body">
-		<form [formGroup]="formGroupUser">
+		<form [formGroup]="formGroupUser" (ngSubmit)="onSubmit()">
 			<div class="mb-3">
 				<label for="titulo" class="form-label">Título</label>
-				<select id="titulo" class="form-select form-select-sm" aria-label=".form-select-sm" formControlName="title">
+				<select 
+					id="titulo" 
+					class="form-select form-select-sm" 
+					aria-label=".form-select-sm" 
+					formControlName="title" 
+					[ngClass]="{ 'is-invalid': submitted &&  fControls['title'].errors }"
+				>
 					<option value="">--Select--</option>
-					<option value="Mr">Mr</option>
-					<option value="Ms">Ms</option>
-					<option value="Mrs">Mrs</option>
-					<option value="Miss">Miss</option>
-					<option value="Dr">Dr</option>
+					<option value="mr">Mr</option>
+					<option value="ms">Ms</option>
+					<option value="mrs">Mrs</option>
+					<option value="miss">Miss</option>
+					<option value="dr">Dr</option>
 				</select>
+
+				<div *ngIf="submitted && fControls['title'].errors" class="invalid-feedback">
+					<div *ngIf="fControls['title'].errors['required']">El título es requerido</div>
+				</div>
 			</div>
 			<div class="mb-3">
 				<label for="nombres" class="form-label">Nombres</label>
-				<input type="text" class="form-control form-control-sm" id="nombres" formControlName="firstName" placeholder="Nombres completos">
+				<input 
+					type="text" 
+					class="form-control form-control-sm" 
+					id="nombres" 
+					formControlName="firstName" 
+					placeholder="Nombres completos"
+					[ngClass]="{ 'is-invalid': submitted &&  fControls['firstName'].errors }"
+				>
+
+				<div *ngIf="submitted && fControls['firstName'].errors" class="invalid-feedback">
+					<div *ngIf="fControls['firstName'].errors['required']">Los nombres son requeridos</div>
+				</div>
 			</div>
 			<div class="mb-3">
 				<label for="apellidos" class="form-label">Apellidos</label>
-				<input type="text" class="form-control form-control-sm" id="apellidos" formControlName="lastName" placeholder="Apellidos completos">
+				<input 
+					type="text" 
+					class="form-control form-control-sm" 
+					id="apellidos" 
+					formControlName="lastName" 
+					placeholder="Apellidos completos"
+					[ngClass]="{ 'is-invalid': submitted &&  fControls['lastName'].errors }"
+				>
+
+				<div *ngIf="submitted && fControls['lastName'].errors" class="invalid-feedback">
+					<div *ngIf="fControls['lastName'].errors['required']">Los apellidos son requeridos</div>
+				</div>
 			</div>
 			<div class="mb-3">
 				<label for="imagen" class="form-label">Imagen</label>
-				<input type="text" class="form-control form-control-sm" id="imagen" formControlName="picture" placeholder="Url de la imagen">
+				<input 
+					type="text" 
+					class="form-control form-control-sm" 
+					id="imagen" 
+					formControlName="picture" 
+					placeholder="Url de la imagen"
+					[ngClass]="{ 'is-invalid': submitted &&  fControls['picture'].errors }"
+				>
+
+				<div *ngIf="submitted && fControls['picture'].errors" class="invalid-feedback">
+					<div *ngIf="fControls['picture'].errors['required']">La imagen es requerida</div>
+				</div>
 			</div>
 			<div class="mb-3">
 				<label for="genero" class="form-label">Género</label>
-				<select id="genero" class="form-select form-select-sm" aria-label=".form-select-sm" formControlName="genero">
+				<select 
+					id="genero" 
+					class="form-select form-select-sm" 
+					aria-label=".form-select-sm" 
+					formControlName="genero"
+					[ngClass]="{ 'is-invalid': submitted &&  fControls['genero'].errors }"
+				>
 					<option value="">--Select--</option>
-					<option value="Male">Male</option>
-					<option value="Female">Female</option>
-					<option value="Other">Other</option>
+					<option value="male">Male</option>
+					<option value="female">Female</option>
+					<option value="other">Other</option>
 				</select>
+
+				<div *ngIf="submitted && fControls['genero'].errors" class="invalid-feedback">
+					<div *ngIf="fControls['genero'].errors['required']">El género es requerida</div>
+				</div>
 			</div>
 			<div class="mb-3">
 				<label for="email" class="form-label">Correo electrónico</label>
@@ -136,21 +190,34 @@
 					readonly
 					aria-describedby="button-addon1"
 					(click)="d.toggle()"
-				/>
+					[ngClass]="{ 'is-invalid': submitted && fControls['fechaNacimiento'].errors }"
+				/>	
+				
+				<div *ngIf="submitted && fControls['fechaNacimiento'].errors" class="invalid-feedback">
+					<div *ngIf="fControls['fechaNacimiento'].errors['required']">La fecha de nacimiento es requerida</div>
+				</div>
 			</div>
 
 			<div class="mb-3">
 				<label for="telefono" class="form-label">Teléfono</label>
-				<input type="text" class="form-control form-control-sm" id="telefono" formControlName="picture" placeholder="Teléfono fijo o celular">
+				<input type="text" class="form-control form-control-sm" id="telefono" formControlName="telefono" placeholder="Teléfono fijo o celular">
 			</div>
 
-			<button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
+			<button
+				*ngIf="selectOption != 2"
+				type="submit" 
+				class="btn btn-outline-primary btn-sm" 
+				[disabled]="loading"
+			>
+				<span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+				<fa-icon *ngIf="!loading" [icon]="['fas', 'floppy-disk']"></fa-icon> Guardar
+			</button>
 		</form>
 	</div>
 	
 	<div class="modal-footer">
 		<button type="button" class="btn btn-outline-danger btn-sm me-2" (click)="modal.close('Close click')">
-			<fa-icon [icon]="['fas', 'user-xmark']"></fa-icon> Cerrar
+			<fa-icon [icon]="['fas', 'xmark']"></fa-icon> Cerrar
 		</button>
 	</div>
 </ng-template>
