@@ -1,8 +1,7 @@
-
 <form>
 	<div class="mb-3 row">
 		<label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">
-			<strong>Buscar en la página actual: </strong>
+			<strong><fa-icon [icon]="['fas', 'magnifying-glass']"></fa-icon> Buscar en la página actual: </strong>
 		</label>
 		<div class="col-xs-6 col-sm-6">
 			<input id="table-filtering-search" placeholder="Buscar..." class="form-control form-control-sm" type="text" [formControl]="filter"/>
@@ -10,12 +9,18 @@
 	</div>
 </form>
 
-
 <button type="button" class="btn btn-outline-success btn-sm float-end" (click)="openModalUser(content, 1, '')">
 	<fa-icon [icon]="['fas', 'user-plus']"></fa-icon> Crear Usuario
 </button>
 
-<table class="table table-striped">
+
+<div class="d-flex justify-content-center text-primary pt-5"  *ngIf="loading">
+	<div class="spinner-grow" role="status"></div>
+	<span class="fs-4">&nbsp; Cargando</span>
+</div>
+
+
+<table class="table table-striped" *ngIf="!loading">
 	<thead>
 		<tr>
 			<th scope="col">#</th>
@@ -41,9 +46,9 @@
 						class="btn btn-outline-secondary btn-sm me-2" 
 						placement="top" 
 						ngbTooltip="Ver detalle"
-						(click)="openModalUser(content, 2, usuario.id)"
+						(click)="openModalUser(contentInfo, 2, usuario.id)"
 					>
-						<fa-icon [icon]="['fas', 'user-check']"></fa-icon>
+						<fa-icon [icon]="['fas', 'user-tag']"></fa-icon>
 					</button>
 
 					<button 
@@ -61,6 +66,7 @@
 						class="btn btn-outline-danger btn-sm me-2"
 						placement="top" 
 						ngbTooltip="Eliminar"
+						(click)="openModalUser(contentInfo, 4, usuario.id)"
 					>
 						<fa-icon [icon]="['fas', 'user-xmark']"></fa-icon>
 					</button>			
@@ -69,7 +75,7 @@
 		</tr>
 	</tbody>
 </table>
-<div class="d-flex justify-content-between p-2">
+<div class="d-flex justify-content-between p-2" *ngIf="!loading">
 	<ngb-pagination
 		[collectionSize]="totalUsuarios"
 		[(page)]="page"
@@ -79,16 +85,32 @@
 	</ngb-pagination>
 </div>
 
+<ngb-alert *ngIf="mensaje && !loading" type="info" (closed)="mensaje = ''">
+	{{ mensaje }}
+</ngb-alert>
+
 <ng-template #content let-modal>
-	<div class="modal-header">
+
+	<div class="modal-header bg-primary text-white">
 		<h4 class="modal-title">{{tituloModal}}</h4>
 		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
 	</div>
 
 	<div class="modal-body">
-		<form [formGroup]="formGroupUser" (ngSubmit)="onSubmit()">
+
+		<div class="d-flex justify-content-center text-primary pt-2" *ngIf="loading">
+			<div class="spinner-grow" role="status"></div>
+			<span class="fs-4">&nbsp; Cargando</span>
+		</div>
+
+		<form [formGroup]="formGroupUser" (ngSubmit)="onSubmit()" *ngIf="!loading">
+			<div class="mb-3" *ngIf="fControls['id'].value">
+				<span class="form-label"><strong>Id:</strong></span> {{fControls['id'].value}}
+			</div>
 			<div class="mb-3">
-				<label for="titulo" class="form-label">Título</label>
+				<label for="titulo" class="form-label">
+					<fa-icon [icon]="['fas', 'user-tie']"></fa-icon> Honorífico 
+				</label>
 				<select 
 					id="titulo" 
 					class="form-select form-select-sm" 
@@ -96,7 +118,7 @@
 					formControlName="title" 
 					[ngClass]="{ 'is-invalid': submitted &&  fControls['title'].errors }"
 				>
-					<option value="">--Select--</option>
+					<option [ngValue]="null">--Select--</option>
 					<option value="mr">Mr</option>
 					<option value="ms">Ms</option>
 					<option value="mrs">Mrs</option>
@@ -105,11 +127,13 @@
 				</select>
 
 				<div *ngIf="submitted && fControls['title'].errors" class="invalid-feedback">
-					<div *ngIf="fControls['title'].errors['required']">El título es requerido</div>
+					<div *ngIf="fControls['title'].errors['required']">El honorífico es requerido</div>
 				</div>
 			</div>
 			<div class="mb-3">
-				<label for="nombres" class="form-label">Nombres</label>
+				<label for="nombres" class="form-label">
+					<fa-icon [icon]="['fas', 'file-signature']"></fa-icon> Nombres
+				</label>
 				<input 
 					type="text" 
 					class="form-control form-control-sm" 
@@ -124,7 +148,9 @@
 				</div>
 			</div>
 			<div class="mb-3">
-				<label for="apellidos" class="form-label">Apellidos</label>
+				<label for="apellidos" class="form-label">
+					<fa-icon [icon]="['fas', 'file-signature']"></fa-icon> Apellidos
+				</label>
 				<input 
 					type="text" 
 					class="form-control form-control-sm" 
@@ -139,7 +165,9 @@
 				</div>
 			</div>
 			<div class="mb-3">
-				<label for="imagen" class="form-label">Imagen</label>
+				<label for="imagen" class="form-label">
+					<fa-icon [icon]="['fas', 'link']"></fa-icon> Imagen
+				</label>
 				<input 
 					type="text" 
 					class="form-control form-control-sm" 
@@ -154,7 +182,9 @@
 				</div>
 			</div>
 			<div class="mb-3">
-				<label for="genero" class="form-label">Género</label>
+				<label for="genero" class="form-label">
+					<fa-icon [icon]="['fas', 'transgender']"></fa-icon> Género
+				</label>
 				<select 
 					id="genero" 
 					class="form-select form-select-sm" 
@@ -162,7 +192,7 @@
 					formControlName="genero"
 					[ngClass]="{ 'is-invalid': submitted &&  fControls['genero'].errors }"
 				>
-					<option value="">--Select--</option>
+					<option [ngValue]="null">--Select--</option>
 					<option value="male">Male</option>
 					<option value="female">Female</option>
 					<option value="other">Other</option>
@@ -173,11 +203,27 @@
 				</div>
 			</div>
 			<div class="mb-3">
-				<label for="email" class="form-label">Correo electrónico</label>
-				<input type="email" class="form-control form-control-sm" id="email" formControlName="email" placeholder="example@example.com">
+				<label for="email" class="form-label">
+					<fa-icon [icon]="['fas', 'envelope']"></fa-icon> Correo electrónico
+				</label>
+
+				<input 
+					type="email" 
+					class="form-control form-control-sm" 
+					id="email" 
+					formControlName="email" 
+					placeholder="example@example.com"
+					[ngClass]="{ 'is-invalid': submitted && fControls['email'].errors }"
+				>
+
+				<div *ngIf="submitted && fControls['email'].errors" class="invalid-feedback">
+					<div *ngIf="fControls['email'].errors?.['pattern']">El Correo electrónico no es valido</div>
+				</div>
 			</div>
 
-			<label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+			<label for="fechaNacimiento" class="form-label">
+				<fa-icon [icon]="['fas', 'calendar']"></fa-icon> Fecha de nacimiento
+			</label>
 			<div class="input-group mb-3">				
 				<button class="btn btn-outline-secondary btn-sm bi bi-calendar3" type="button" (click)="d.toggle()" id="button-addon1"></button>
 				<input
@@ -199,18 +245,19 @@
 			</div>
 
 			<div class="mb-3">
-				<label for="telefono" class="form-label">Teléfono</label>
+				<label for="telefono" class="form-label">
+					<fa-icon [icon]="['fas', 'phone']"></fa-icon> Teléfono
+				</label>
 				<input type="text" class="form-control form-control-sm" id="telefono" formControlName="telefono" placeholder="Teléfono fijo o celular">
 			</div>
 
 			<button
 				*ngIf="selectOption != 2"
 				type="submit" 
-				class="btn btn-outline-primary btn-sm" 
+				class="btn btn-outline-primary btn" 
 				[disabled]="loading"
 			>
-				<span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-				<fa-icon *ngIf="!loading" [icon]="['fas', 'floppy-disk']"></fa-icon> Guardar
+				<fa-icon [icon]="['fas', 'floppy-disk']"></fa-icon> Guardar
 			</button>
 		</form>
 	</div>
@@ -218,6 +265,51 @@
 	<div class="modal-footer">
 		<button type="button" class="btn btn-outline-danger btn-sm me-2" (click)="modal.close('Close click')">
 			<fa-icon [icon]="['fas', 'xmark']"></fa-icon> Cerrar
+		</button>
+	</div>
+</ng-template>
+
+<ng-template #contentInfo let-modalInfo>
+	<div class="modal-header bg-primary text-white">
+		<h4 class="card-header">Datos del usuario</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modalInfo.dismiss('Cross click')"></button>
+	</div>
+
+	<div class="modal-body">
+
+		<div class="d-flex justify-content-center text-primary pt-2" *ngIf="loading">
+			<div class="spinner-grow" role="status"></div>
+			<span class="fs-4">&nbsp; Cargando</span>
+		</div>
+
+		<div class="text-center" *ngIf="!loading">
+			<img [src]="datosUsuario.picture" class="card-img-top img-thumbnail rounded-circle" [alt]="datosUsuario.firstName">
+		</div>
+		
+		<div *ngIf="!loading">
+			<h5 class="card-title">
+				<fa-icon [icon]="['fas', 'user-tie']"></fa-icon> {{(datosUsuario.title +" "+ datosUsuario.firstName +" "+ datosUsuario.lastName) | titlecase}}
+			</h5>
+			<h6 class="card-subtitle mb-2 text-muted">{{datosUsuario.id}}</h6>
+			<div class="card-text">
+				<div><strong><fa-icon [icon]="['fas', 'transgender']"></fa-icon> Género: </strong>{{datosUsuario.gender | titlecase}}</div>
+				<div><strong><fa-icon [icon]="['fas', 'envelope']"></fa-icon> Correo electrónico: </strong>{{datosUsuario.email}}</div>
+				<div><strong><fa-icon [icon]="['fas', 'calendar']"></fa-icon> Fecha de nacimiento: </strong>{{datosUsuario.dateOfBirth | date}}</div>
+				<div><strong><fa-icon [icon]="['fas', 'phone']"></fa-icon> Teléfono: </strong>{{datosUsuario.phone}}</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal-footer" *ngIf="!loading && selectOption == 4">
+		<p><strong>¿Esta seguro de eliminar el usuario?</strong></p>
+		<button type="button" class="btn btn-outline-danger btn-sm me-2" (click)="modalInfo.close('Close click')">
+			<fa-icon [icon]="['fas', 'xmark']"></fa-icon> No
+		</button>
+
+		
+		<button type="button" class="btn btn-outline-primary btn-sm me-2" (click)="confirmDeleteUser(datosUsuario.id)">
+			<span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+			<fa-icon *ngIf="!loading" [icon]="['fas', 'check']"></fa-icon> Si
 		</button>
 	</div>
 </ng-template>

@@ -11,7 +11,7 @@ import { UsersComponent } from './components/users/users.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faFloppyDisk, faUserCheck, faUserPen, faUserPlus, faUserXmark, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faCheck, faEnvelope, faFileSignature, faFloppyDisk, faLink, faMagnifyingGlass, faPhone, faTransgender, faUserCircle, faUserPen, faUserPlus, faUserTag, faUserTie, faUserXmark, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 
 @NgModule({
@@ -40,10 +40,20 @@ export class HomeModule {
     library.addIcons(
       faUserPen, 
       faUserPlus, 
-      faUserXmark, 
-      faUserCheck, 
+      faUserXmark,
+      faUserTag, 
       faFloppyDisk,
-      faXmark
+      faXmark,
+      faCheck,
+      faUserCircle,
+      faUserTie,
+      faFileSignature,
+      faLink,
+      faTransgender,
+      faEnvelope,
+      faCalendar,
+      faPhone,
+      faMagnifyingGlass
     );
   }
 }

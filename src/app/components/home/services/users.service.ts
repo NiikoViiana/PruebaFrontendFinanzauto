@@ -50,5 +50,15 @@ export class UsersService {
                 return data;
               })
             );
+  } 
+  
+  deleteUser(idUser: User['id']): Observable<User['id']> {
+    return  this.http.delete(environment.apiUrl + `/data/v1/user/${idUser}`)
+            .pipe(
+              map((response: any) => {
+                let data: User['id'] = response;
+                return data;
+              })
+            );
   }
 }

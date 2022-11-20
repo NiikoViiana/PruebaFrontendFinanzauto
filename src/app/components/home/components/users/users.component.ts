@@ -1,7 +1,7 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, OnInit, PipeTransform, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, PipeTransform, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { async, map, Observable, startWith } from 'rxjs';
 import { User } from 'src/app/components/home/models/user.model';
 import { UsersService } from 'src/app/components/home/services/users.service';
@@ -12,6 +12,9 @@ import { UsersService } from 'src/app/components/home/services/users.service';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
+
+  @ViewChild('modal') modal: NgbActiveModal | undefined;
+
 
   listaUsuarios: Array<User> = [];  
   totalUsuarios: number = 0;
@@ -29,6 +32,18 @@ export class UsersComponent implements OnInit {
 
   selectOption: number = 0;
 
+  datosUsuario: User = {
+    firstName: '',
+    id: '',
+    lastName: '',
+    picture: '',
+    title: '',
+    gender: '',
+    dateOfBirth: new Date()
+  };
+
+  mensaje: string = "";
+
   constructor(
     private UsersService: UsersService, 
     private pipe: DecimalPipe,
@@ -42,12 +57,15 @@ export class UsersComponent implements OnInit {
   }
 
   async getData() {
+    this.loading        =   true;
     this.listaUsuarios  =   await this.getUsers() as Array<User>;
     
     this.usuarios$ = this.filter.valueChanges.pipe(
 			startWith(''),
 			map((text) => this.searchInTable(text, this.pipe)),
 		);
+
+    this.loading        =   false;
   }
 
   getUsers(): Promise<Array<User>> {
@@ -71,6 +89,7 @@ export class UsersComponent implements OnInit {
       const term = text.toLowerCase();
       return (
         usuario.id.toLowerCase().includes(term) ||
+        usuario.title.toLowerCase().includes(term) ||
         usuario.firstName.toLowerCase().includes(term)||
         usuario.lastName.toLowerCase().includes(term)
       );
@@ -83,38 +102,45 @@ export class UsersComponent implements OnInit {
 	}
 
   async openModalUser(content: any, option: number, idUser: User['id']) {
-
+    
+    this.loading  = true;
     this.selectOption = option;
-		this.modalService.open(content, { centered: true, scrollable: true });
+    this.modalService.open(content, { centered: true, scrollable: true });
 
-    this.tituloModal  = this.selectOption == 1 ? 'Crear ' : this.selectOption == 2 ? 'Detalle del ': 'Editar ';
-    this.tituloModal  = this.tituloModal + 'Usuario';
 
-    this.formGroupUser   =   this.fb.group({
-      firstName: ["", Validators.required],
-      id: [""],
-      lastName: ["", Validators.required],
-      picture: ["", Validators.required],
-      title: ["", Validators.required],
-      genero: ["", Validators.required],
-      email: [""],
-      fechaNacimiento: [new Date().toLocaleDateString(), Validators.required],
-      telefono: [0]
-    });
-
-    this.formGroupUser.reset();
-
-    if(this.selectOption == 2 || this.selectOption == 3) { 
-
-      let dataUser = await this.getUserById(idUser) as User;
-      this.setDataUser(dataUser);
-
-      if(this.selectOption == 2) {
-        this.formGroupUser.disable();
-      }
+    if(this.selectOption == 1 || this.selectOption == 3) {    
       
+      this.submitted = false;
+
+      this.tituloModal  = this.selectOption == 1 ? 'Crear ' : 'Editar ';
+      this.tituloModal  = this.tituloModal + 'Usuario';
+      
+      this.formGroupUser   =   this.fb.group({
+        firstName: ["", Validators.required],
+        id: [""],
+        lastName: ["", Validators.required],
+        picture: ["", Validators.required],
+        title: ["", Validators.required],
+        genero: ["", Validators.required],
+        email: ["", Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")],
+        fechaNacimiento: [new Date().toLocaleDateString(), Validators.required],
+        telefono: [0]
+      });
+
+      this.formGroupUser.reset();
+      
+      if(this.selectOption == 3) {
+        let dataUser = await this.getUserById(idUser) as User;
+        this.setDataUser(dataUser);
+      }
+
+    } else {
+      let dataUser = await this.getUserById(idUser) as User;
+      this.datosUsuario = dataUser;
     }
-	}
+
+    this.loading  = false;
+	}  
 
   getUserById(idUser: string): Promise<User> {
     return new Promise(resolve => {
@@ -134,6 +160,7 @@ export class UsersComponent implements OnInit {
 
     if (this.formGroupUser.invalid) {
       this.loading    =   false;
+      console.log(this.formGroupUser);
       return;
     }
 
@@ -152,22 +179,25 @@ export class UsersComponent implements OnInit {
       phone: this.formGroupUser.get('telefono')?.getRawValue()
     };
 
-    console.log(dataUser);
-
     if(dataUser.id == "" || dataUser.id == null) {
 
       await this.createUser(dataUser).then(
         (response: User) => {
-          console.log("OK creación", response);
+          this.mensaje  = `El usuario ${response.firstName} se creó correctamente`;
           this.setDataUser(response);
           this.selectOption = 3;
         }
       ).catch(
-        error => console.error("Sucedió un error al guardar", error)
+        error => {
+          this.mensaje  = `Ha sucedido un error creando el usuario, contacte al administrador`;
+          console.error("createUser", error);
+        }
       ).finally(
         () => {
           this.submitted  =   false;
           this.loading    =   false;
+          this.modalService.dismissAll();
+          this.getData();
         }
       );
 
@@ -175,20 +205,46 @@ export class UsersComponent implements OnInit {
 
       await this.editUser(dataUser).then(
         (response: User) => {
-          console.log("OK edición", response)
+          this.mensaje  = `El usuario ${response.firstName} se editó correctamente`;
           this.setDataUser(response);
         }
       ).catch(
-        error => console.error("Sucedió un error al editar", error)
+        error => {
+          this.mensaje  = `Ha sucedido un error editando el usuario, contacte al administrador`;
+          console.error("editUser", error);
+        }
       ).finally(
         () => {
           this.submitted  =   false;
           this.loading    =   false;
+          this.modalService.dismissAll();
+          this.getData();
         }
       );
-
     }
-    this.getData();
+    
+  }
+
+  async confirmDeleteUser(idUser: User['id']) {
+
+    this.loading = true;
+    
+    await this.deleteUser(idUser).then(
+      (response: User['id']) => {
+        this.mensaje  = `El usuario se eliminó correctamente`;
+      }
+    ).catch(
+      error => {
+        this.mensaje  = `Ha sucedido un error eliminando el usuario, contacte al administrador`;
+        console.error("deleteUser", error);
+      }
+    ).finally(
+      () => {
+        this.modalService.dismissAll();
+        this.loading = false;
+        this.getData();
+      }
+    );
   }
 
   createUser(dataUser: User): Promise<User> {
@@ -217,6 +273,19 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  deleteUser(idUser: User['id']): Promise<User['id']> {
+    return new Promise((resolve, reject) => {
+
+      this.UsersService.deleteUser(idUser).subscribe({
+        next: (data: User['id']) => {
+          resolve(data);
+        },
+        error:  error => reject(error)
+      });
+
+    });
+  }
+
   setDataUser(dataUser: User): void {
 
     this.formGroupUser.get('firstName')?.setValue(dataUser.firstName);
@@ -234,6 +303,6 @@ export class UsersComponent implements OnInit {
     this.formGroupUser.get('telefono')?.setValue(dataUser.phone);
   }
 
-  get fControls() { return this.formGroupUser.controls; }
+  get fControls() { return this.formGroupUser.controls;  }
 
 }
