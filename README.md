@@ -13,14 +13,11 @@ A continuación se especifican las dependencias usadas en el proyecto:
 - Bootstrap versión 5.2.0
 - Angular Fontawesome versión 0.11.0.
 
-## Creado por:
+# Creado por
 Nicolás Viana Castro
 niikov11@gmail.com
 
-
-
---
-
+## Licencia
 Proyecto para el registro de consulta y usuarios al un sistema de pruebas
 Copyright (C) 2022 Nicolás Viana Castro
 
