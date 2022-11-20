@@ -13,12 +13,10 @@
 	<fa-icon [icon]="['fas', 'user-plus']"></fa-icon> Crear Usuario
 </button>
 
-
 <div class="d-flex justify-content-center text-primary pt-5"  *ngIf="loading">
 	<div class="spinner-grow" role="status"></div>
 	<span class="fs-4">&nbsp; Cargando</span>
 </div>
-
 
 <table class="table table-striped" *ngIf="!loading">
 	<thead>
@@ -292,10 +290,10 @@
 			</h5>
 			<h6 class="card-subtitle mb-2 text-muted">{{datosUsuario.id}}</h6>
 			<div class="card-text">
-				<div><strong><fa-icon [icon]="['fas', 'transgender']"></fa-icon> Género: </strong>{{datosUsuario.gender | titlecase}}</div>
-				<div><strong><fa-icon [icon]="['fas', 'envelope']"></fa-icon> Correo electrónico: </strong>{{datosUsuario.email}}</div>
-				<div><strong><fa-icon [icon]="['fas', 'calendar']"></fa-icon> Fecha de nacimiento: </strong>{{datosUsuario.dateOfBirth | date}}</div>
-				<div><strong><fa-icon [icon]="['fas', 'phone']"></fa-icon> Teléfono: </strong>{{datosUsuario.phone}}</div>
+				<div><strong><fa-icon [icon]="['fas', 'transgender']"></fa-icon></strong> {{datosUsuario.gender | titlecase}}</div>
+				<div><strong><fa-icon [icon]="['fas', 'envelope']"></fa-icon></strong> {{datosUsuario.email}}</div>
+				<div><strong><fa-icon [icon]="['fas', 'calendar']"></fa-icon></strong> {{datosUsuario.dateOfBirth | date}}</div>
+				<div><strong><fa-icon [icon]="['fas', 'phone']"></fa-icon></strong> {{datosUsuario.phone}}</div>
 			</div>
 		</div>
 	</div>

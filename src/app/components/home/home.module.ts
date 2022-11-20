@@ -12,12 +12,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faCalendar, faCheck, faEnvelope, faFileSignature, faFloppyDisk, faLink, faMagnifyingGlass, faPhone, faTransgender, faUserCircle, faUserPen, faUserPlus, faUserTag, faUserTie, faUserXmark, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { IndexComponent } from './components/index/index.component';
 
 
 @NgModule({
   declarations: [    
     HomeComponent,
     NavComponent,
+    IndexComponent,
     UsersComponent
   ],
   imports: [
