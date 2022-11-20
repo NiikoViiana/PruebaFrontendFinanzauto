@@ -6,7 +6,6 @@ https://www.promotec.com.co/devs/pruebadesarrollo.aspx
 El proyecto consulta la información de una API que usa los principios REST (GET, POST, PUT, DELETE)
 El proyecto se realizo usando el patrón de diseño de carga diferida (Lazy Loading)
 
-
 ## Dependencias
 A continuación se especifican las dependencias usadas en el proyecto:
 - Angular CLI versión 14.2.10.
@@ -14,12 +13,14 @@ A continuación se especifican las dependencias usadas en el proyecto:
 - Bootstrap versión 5.2.0
 - Angular Fontawesome versión 0.11.0.
 
-# Creado por:
+## Creado por:
 Nicolás Viana Castro
 niikov11@gmail.com
 
 
+
 --
+
 Proyecto para el registro de consulta y usuarios al un sistema de pruebas
 Copyright (C) 2022 Nicolás Viana Castro
 
